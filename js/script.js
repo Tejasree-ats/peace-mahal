@@ -98,45 +98,10 @@
     onScroll();
   }
 
-  // ── Gallery Filtering ────────────────────────────────────
+  // ── Gallery ──────────────────────────────────────────────
   function initGallery() {
-    var filterBtns = document.querySelectorAll('.gallery__filter-btn');
-    var galleryItems = document.querySelectorAll('.gallery__item');
-
-    if (!filterBtns.length) return;
-
-    filterBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var filter = this.getAttribute('data-filter');
-
-        // Update active button
-        filterBtns.forEach(function (b) { b.classList.remove('active'); });
-        this.classList.add('active');
-
-        // Filter items
-        galleryItems.forEach(function (item) {
-          var category = item.getAttribute('data-category');
-          if (filter === 'all' || category === filter) {
-            item.style.display = '';
-            item.style.opacity = '0';
-            item.style.transform = 'scale(0.95)';
-            requestAnimationFrame(function () {
-              requestAnimationFrame(function () {
-                item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                item.style.opacity = '1';
-                item.style.transform = 'scale(1)';
-              });
-            });
-          } else {
-            item.style.opacity = '0';
-            item.style.transform = 'scale(0.95)';
-            setTimeout(function () {
-              item.style.display = 'none';
-            }, 300);
-          }
-        });
-      });
-    });
+    // Category filters removed per UX requirements.
+    // All 5 unique authentic Peace Mahal photographs are displayed in a clean responsive grid.
   }
 
   // ── Lightbox ─────────────────────────────────────────────
