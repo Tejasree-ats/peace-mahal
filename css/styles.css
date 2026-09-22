@@ -1338,10 +1338,6 @@ input, textarea, select {
 }
 
 /* ── Contact Section ──────────────────────────────────────── */
-.contact__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-/* ── Contact Section ──────────────────────────────────────── */
 .contact__container {
   max-width: 980px;
   margin: 0 auto;
@@ -1731,20 +1727,51 @@ input, textarea, select {
     --nav-height: 70px;
   }
 
+  /* ── Global box model safety ── */
+  *,
+  *::before,
+  *::after {
+    max-width: 100%;
+  }
+
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    padding-bottom: 64px;
+  }
+
   .container {
     padding: 0 var(--space-lg);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .section {
     padding: var(--space-3xl) 0;
   }
 
+  /* ── Navbar ── */
+  .navbar__inner {
+    padding: 0 var(--space-md);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ── Hero ── */
   .hero__content {
     padding: var(--space-md) var(--space-sm);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .hero__card {
-    padding: 0;
+    padding: var(--space-lg) var(--space-md);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .hero__actions {
@@ -1764,19 +1791,125 @@ input, textarea, select {
     font-size: 0.95rem;
   }
 
+  /* ── Quick Info Bar ── */
   .quick-info__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
+    width: 100%;
   }
 
+  /* ── Location Section — CORE FIX ── */
+  .location__grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    width: 100%;
+  }
+
+  .location__info {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .location__address-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .location__address-text {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .location__map-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-height: 280px;
+    height: 300px;
+    aspect-ratio: unset;
+    border-radius: var(--radius-md);
+  }
+
+  .location__map-container iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .location__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+    width: 100%;
+  }
+
+  .location__actions .btn {
+    width: 100%;
+    max-width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* ── Contact Section ── */
   .contact__cards-grid {
     grid-template-columns: 1fr;
     gap: var(--space-md);
+    width: 100%;
   }
 
+  .contact__card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .contact__card-value {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .contact__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+    width: 100%;
+  }
+
+  .contact__actions .btn {
+    width: 100%;
+    max-width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* ── Gallery ── */
+  .gallery__grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-md);
+    width: 100%;
+  }
+
+  .gallery__grid > .gallery__item {
+    grid-column: auto !important;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* ── Footer ── */
   .footer__grid {
     grid-template-columns: 1fr;
     gap: var(--space-2xl);
+    width: 100%;
   }
 
   .footer__bottom {
@@ -1785,16 +1918,7 @@ input, textarea, select {
     gap: var(--space-sm);
   }
 
-  .gallery__grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: var(--space-md);
-  }
-
-  .gallery__grid > .gallery__item {
-    grid-column: auto !important;
-    max-width: 100%;
-  }
-
+  /* ── Lightbox ── */
   .lightbox__nav {
     width: 44px;
     height: 44px;
@@ -1815,25 +1939,7 @@ input, textarea, select {
     height: 44px;
   }
 
-  .contact__actions,
-  .location__actions {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
-  }
-
-  .contact__actions .btn,
-  .location__actions .btn {
-    width: 100%;
-    max-width: 340px;
-    min-height: 48px;
-    justify-content: center;
-  }
-
-  body {
-    padding-bottom: 64px;
-  }
-
+  /* ── Mobile Bottom Bar ── */
   .mobile-contact-bar {
     display: flex;
     position: fixed;
@@ -1907,10 +2013,12 @@ input, textarea, select {
 @media (max-width: 480px) {
   .container {
     padding: 0 1rem;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .hero__card {
-    padding: 0;
+    padding: var(--space-md) var(--space-sm);
   }
 
   .hero__title {
@@ -1955,6 +2063,11 @@ input, textarea, select {
     gap: var(--space-md);
   }
 
+  .gallery__grid > .gallery__item {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .section__title {
     font-size: clamp(1.6rem, 5.5vw, 2.2rem);
   }
@@ -1962,6 +2075,20 @@ input, textarea, select {
   .about__highlight {
     flex-direction: column;
     gap: var(--space-md);
+  }
+
+  /* Location map — compact height on small phones */
+  .location__map-container {
+    height: 260px;
+    min-height: 240px;
+  }
+
+  .location__address-card {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .location__actions .btn {
+    font-size: 0.93rem;
   }
 
   .contact__card {
@@ -1972,6 +2099,7 @@ input, textarea, select {
   .contact__card-value {
     font-size: 0.95rem;
     word-break: break-word;
+    overflow-wrap: break-word;
   }
 }
 
