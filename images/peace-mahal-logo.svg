@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C158"/>
+      <stop offset="50%" stop-color="#C5A059"/>
+      <stop offset="100%" stop-color="#9A7B38"/>
+    </linearGradient>
+    <linearGradient id="limeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8ED64F"/>
+      <stop offset="100%" stop-color="#5E992A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Architectural Arch Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Outer Arch -->
+    <path d="M 30 5 C 16 5 5 16 5 30 L 5 56 L 11 56 L 11 30 C 11 20 20 11 30 11 C 40 11 49 20 49 30 L 49 56 L 55 56 L 55 30 C 55 16 44 5 30 5 Z" fill="url(#goldGrad)" />
+    <!-- Inner Dome Arch -->
+    <path d="M 30 16 C 22 16 16 23 16 32 L 16 56 L 22 56 L 22 32 C 22 27 26 22 30 22 C 34 22 38 27 38 32 L 38 56 L 44 56 L 44 32 C 44 23 38 16 30 16 Z" fill="#0D1B3E" />
+    <!-- Center Crescent & Star / Decorative finial -->
+    <circle cx="30" cy="38" r="4" fill="url(#limeGrad)" />
+    <path d="M 30 2 L 32 8 L 28 8 Z" fill="url(#goldGrad)" />
+  </g>
+
+  <!-- Typography -->
+  <!-- Main Name: PEACE MAHAL -->
+  <text x="75" y="38" font-family="'Cinzel', 'Playfair Display', 'Georgia', serif" font-size="24" font-weight="700" letter-spacing="2.5" fill="#0D1B3E">
+    PEACE <tspan fill="#C5A059">MAHAL</tspan>
+  </text>
+
+  <!-- Subtitle: WEDDINGS • EXHIBITIONS • EVENTS -->
+  <text x="76" y="53" font-family="'Outfit', 'Inter', 'Segoe UI', sans-serif" font-size="7.5" font-weight="600" letter-spacing="1.8" fill="#5E992A">
+    WEDDINGS • EXHIBITIONS • EVENTS
+  </text>
+
+  <!-- Location Badge: KILAKARAI -->
+  <text x="76" y="66" font-family="'Outfit', 'Inter', 'Segoe UI', sans-serif" font-size="7" font-weight="500" letter-spacing="3" fill="#888888">
+    KEELAKARAI
+  </text>
+</svg>

@@ -6,9 +6,9 @@ Official website for **Peace Mahal**, a functional hall and wedding event venue 
 - **Name**: Peace Mahal
 - **Type**: Functional Hall / Wedding Venue / Event Hall
 - **Address**: 12/620, Vallal Seethakathi Salai, Behind Best Mummy Bakery, Keelakarai, Tamil Nadu 623517, India
-- **Primary Contact**: +91 9500850116
-- **Secondary Contact**: +91 9942658410
-- **WhatsApp**: +91 9500850116
+- **Primary Contact**: +91 88835 55249
+- **Secondary Contact**: +91 90034 33443
+- **WhatsApp**: +91 88835 55249
 - **Business Hours**: Monday – Sunday: 9:00 AM – 7:00 PM
 
 ## Project Structure

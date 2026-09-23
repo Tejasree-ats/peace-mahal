@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="qrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D1B3E"/>
+      <stop offset="100%" stop-color="#1A365D"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="200" height="200" rx="16" fill="#FFFFFF"/>
+  <rect x="6" y="6" width="188" height="188" rx="12" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- Outer Finder Patterns -->
+  <!-- Top Left -->
+  <rect x="22" y="22" width="46" height="46" rx="6" fill="#0D1B3E"/>
+  <rect x="28" y="28" width="34" height="34" rx="4" fill="#FFFFFF"/>
+  <rect x="34" y="34" width="22" height="22" rx="2" fill="#0D1B3E"/>
+  
+  <!-- Top Right -->
+  <rect x="132" y="22" width="46" height="46" rx="6" fill="#0D1B3E"/>
+  <rect x="138" y="28" width="34" height="34" rx="4" fill="#FFFFFF"/>
+  <rect x="144" y="34" width="22" height="22" rx="2" fill="#0D1B3E"/>
+  
+  <!-- Bottom Left -->
+  <rect x="22" y="132" width="46" height="46" rx="6" fill="#0D1B3E"/>
+  <rect x="28" y="138" width="34" height="34" rx="4" fill="#FFFFFF"/>
+  <rect x="34" y="144" width="22" height="22" rx="2" fill="#0D1B3E"/>
+  
+  <!-- Grid Matrix elements simulating QR -->
+  <!-- Middle column elements -->
+  <rect x="76" y="24" width="10" height="10" rx="2" fill="#5E992A"/>
+  <rect x="94" y="24" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="112" y="24" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  
+  <rect x="76" y="42" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="94" y="42" width="10" height="18" rx="2" fill="#C5A059"/>
+  <rect x="112" y="42" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  
+  <rect x="22" y="76" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="40" y="76" width="18" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="66" y="76" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="84" y="76" width="10" height="10" rx="2" fill="#5E992A"/>
+  <rect x="102" y="76" width="18" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="128" y="76" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="146" y="76" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="164" y="76" width="14" height="10" rx="2" fill="#C5A059"/>
+  
+  <rect x="22" y="94" width="18" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="48" y="94" width="10" height="10" rx="2" fill="#5E992A"/>
+  <rect x="136" y="94" width="10" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="154" y="94" width="18" height="10" rx="2" fill="#0D1B3E"/>
+
+  <!-- Center Pin Logo Badge -->
+  <rect x="74" y="74" width="52" height="52" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <g transform="translate(85, 83) scale(0.6)">
+    <!-- Map pin -->
+    <path d="M 25 2 C 14 2 5 11 5 22 C 5 35 25 50 25 50 C 25 50 45 35 45 22 C 45 11 36 2 25 2 Z" fill="#C5A059"/>
+    <circle cx="25" cy="19" r="7" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Bottom elements -->
+  <rect x="76" y="134" width="10" height="18" rx="2" fill="#0D1B3E"/>
+  <rect x="94" y="134" width="18" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="120" y="134" width="10" height="10" rx="2" fill="#5E992A"/>
+  <rect x="138" y="134" width="10" height="18" rx="2" fill="#0D1B3E"/>
+  <rect x="156" y="134" width="18" height="10" rx="2" fill="#C5A059"/>
+
+  <rect x="76" y="160" width="18" height="10" rx="2" fill="#0D1B3E"/>
+  <rect x="102" y="160" width="10" height="10" rx="2" fill="#5E992A"/>
+  <rect x="120" y="152" width="10" height="18" rx="2" fill="#0D1B3E"/>
+  <rect x="146" y="160" width="28" height="10" rx="2" fill="#0D1B3E"/>
+</svg>

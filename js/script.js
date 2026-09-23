@@ -1,11 +1,13 @@
 /**
  * ============================================================
- * PEACE MAHAL — MAIN SCRIPT
+ * PEACE MAHAL — MAIN SCRIPT (V2 BILINGUAL & UPGRADES)
  * ============================================================
  */
 
 (function () {
   'use strict';
+
+  var currentLang = 'en';
 
   // ── Helper: Get config value safely ──────────────────────
   function getConfig(key, fallback) {
@@ -18,20 +20,173 @@
     initNavigation();
     initScrollEffects();
     initGallery();
+    initGallerySlider();
     initLightbox();
-    initEnquiryForm();
     initContactLinks();
     initRevealAnimations();
     initBackToTop();
+    initLanguage();
     renderDynamicContent();
   });
 
+  // ── Language System (Bilingual English / Tamil) ───────────
+  function initLanguage() {
+    var storedLang = localStorage.getItem('pm_lang');
+    var modalBackdrop = document.getElementById('lang-modal-backdrop');
+    var modalClose = document.getElementById('lang-modal-close');
+    var btnEn = document.getElementById('lang-choose-en');
+    var btnTa = document.getElementById('lang-choose-ta');
+
+    if (storedLang === 'ta' || storedLang === 'en') {
+      currentLang = storedLang;
+      applyLanguage(currentLang);
+    } else {
+      // First visit: show language choice popup after short delay
+      setTimeout(function () {
+        if (modalBackdrop) modalBackdrop.classList.add('active');
+      }, 700);
+    }
+
+    // Modal button handlers
+    if (btnEn) {
+      btnEn.addEventListener('click', function () {
+        setLanguage('en');
+        closeLangModal();
+      });
+    }
+
+    if (btnTa) {
+      btnTa.addEventListener('click', function () {
+        setLanguage('ta');
+        closeLangModal();
+      });
+    }
+
+    if (modalClose) {
+      modalClose.addEventListener('click', function () {
+        closeLangModal();
+        if (!localStorage.getItem('pm_lang')) {
+          setLanguage('en');
+        }
+      });
+    }
+
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', function (e) {
+        if (e.target === modalBackdrop) {
+          closeLangModal();
+          if (!localStorage.getItem('pm_lang')) {
+            setLanguage('en');
+          }
+        }
+      });
+    }
+
+    // Language switchers (in header and footer)
+    var switchers = document.querySelectorAll('.lang-switch');
+    switchers.forEach(function (sw) {
+      sw.addEventListener('click', function (e) {
+        var opt = e.target.closest('.lang-switch__opt');
+        if (opt) {
+          var selected = opt.getAttribute('data-lang');
+          if (selected && selected !== currentLang) {
+            setLanguage(selected);
+          }
+        }
+      });
+    });
+  }
+
+  function closeLangModal() {
+    var modal = document.getElementById('lang-modal-backdrop');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    try {
+      localStorage.setItem('pm_lang', lang);
+    } catch (e) {
+      // localStorage may fail in restricted iframe / private browsing
+    }
+    applyLanguage(lang);
+  }
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+    if (lang === 'ta') {
+      document.body.classList.add('lang-ta');
+    } else {
+      document.body.classList.remove('lang-ta');
+    }
+
+    if (typeof SITE_CONFIG === 'undefined' || !SITE_CONFIG.translations) return;
+    var dict = SITE_CONFIG.translations[lang] || SITE_CONFIG.translations.en;
+    if (!dict) return;
+
+    // 1. Text elements with data-i18n
+    var i18nElements = document.querySelectorAll('[data-i18n]');
+    i18nElements.forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
+
+    // 2. Events cards with data-i18n-event-title & data-i18n-event-desc
+    if (SITE_CONFIG.eventTypes) {
+      var eventTitles = document.querySelectorAll('[data-i18n-event-title]');
+      eventTitles.forEach(function (el) {
+        var idx = parseInt(el.getAttribute('data-i18n-event-title'), 10);
+        if (SITE_CONFIG.eventTypes[idx]) {
+          el.textContent = lang === 'ta' && SITE_CONFIG.eventTypes[idx].nameTa 
+            ? SITE_CONFIG.eventTypes[idx].nameTa 
+            : SITE_CONFIG.eventTypes[idx].name;
+        }
+      });
+
+      var eventDescs = document.querySelectorAll('[data-i18n-event-desc]');
+      eventDescs.forEach(function (el) {
+        var idx = parseInt(el.getAttribute('data-i18n-event-desc'), 10);
+        if (SITE_CONFIG.eventTypes[idx]) {
+          el.textContent = lang === 'ta' && SITE_CONFIG.eventTypes[idx].descriptionTa 
+            ? SITE_CONFIG.eventTypes[idx].descriptionTa 
+            : SITE_CONFIG.eventTypes[idx].description;
+        }
+      });
+    }
+
+    // 3. Gallery slide captions & data-caption attributes
+    var slides = document.querySelectorAll('.gallery__slide');
+    slides.forEach(function (slide, idx) {
+      var captionEn = slide.getAttribute('data-caption') || '';
+      var captionTa = slide.getAttribute('data-caption-ta') || captionEn;
+      var currentCap = lang === 'ta' ? captionTa : captionEn;
+      var captionEl = slide.querySelector('.gallery__slide-caption');
+      if (captionEl) {
+        captionEl.textContent = currentCap;
+      }
+    });
+
+    // 4. Update switcher active styles
+    var switcherOpts = document.querySelectorAll('.lang-switch__opt');
+    switcherOpts.forEach(function (opt) {
+      if (opt.getAttribute('data-lang') === lang) {
+        opt.classList.add('active');
+      } else {
+        opt.classList.remove('active');
+      }
+    });
+
+    // 5. Re-render facilities in chosen language
+    renderFacilities();
+  }
+
   // ── Navigation ───────────────────────────────────────────
   function initNavigation() {
-    const toggle = document.getElementById('navbar-toggle');
-    const menu = document.getElementById('navbar-menu');
-    const links = menu ? menu.querySelectorAll('.navbar__link') : [];
-    const navbar = document.getElementById('navbar');
+    var toggle = document.getElementById('navbar-toggle');
+    var menu = document.getElementById('navbar-menu');
+    var links = menu ? menu.querySelectorAll('.navbar__link') : [];
 
     if (toggle && menu) {
       toggle.addEventListener('click', function () {
@@ -60,7 +215,7 @@
     }
 
     // Active link on scroll
-    const sections = document.querySelectorAll('section[id]');
+    var sections = document.querySelectorAll('section[id]');
     function updateActiveLink() {
       var scrollY = window.scrollY + 120;
       sections.forEach(function (section) {
@@ -98,10 +253,38 @@
     onScroll();
   }
 
-  // ── Gallery ──────────────────────────────────────────────
+  // ── Gallery Base ─────────────────────────────────────────
   function initGallery() {
-    // Category filters removed per UX requirements.
-    // All 5 unique authentic Peace Mahal photographs are displayed in a clean responsive grid.
+    // Handled by horizontal slider and lightbox
+  }
+
+  // ── Gallery Horizontal Slider ────────────────────────────
+  function initGallerySlider() {
+    var track = document.getElementById('gallery-slider-track');
+    var prevBtn = document.getElementById('gallery-slider-prev');
+    var nextBtn = document.getElementById('gallery-slider-next');
+
+    if (!track) return;
+
+    function getSlideScrollAmount() {
+      var slide = track.querySelector('.gallery__slide');
+      if (slide) {
+        return slide.offsetWidth + 24; // Width + gap
+      }
+      return 340;
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function () {
+        track.scrollBy({ left: -getSlideScrollAmount(), behavior: 'smooth' });
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        track.scrollBy({ left: getSlideScrollAmount(), behavior: 'smooth' });
+      });
+    }
   }
 
   // ── Lightbox ─────────────────────────────────────────────
@@ -120,7 +303,7 @@
     var currentIndex = 0;
 
     function updateGalleryItems() {
-      galleryItems = Array.from(document.querySelectorAll('.gallery__item:not([style*="display: none"])'));
+      galleryItems = Array.from(document.querySelectorAll('.gallery__item'));
     }
 
     function openLightbox(index) {
@@ -138,8 +321,12 @@
 
     function showImage() {
       if (!galleryItems[currentIndex]) return;
-      var img = galleryItems[currentIndex].querySelector('img');
-      var caption = galleryItems[currentIndex].getAttribute('data-caption') || '';
+      var item = galleryItems[currentIndex];
+      var img = item.querySelector('img');
+      var captionEn = item.getAttribute('data-caption') || '';
+      var captionTa = item.getAttribute('data-caption-ta') || captionEn;
+      var caption = currentLang === 'ta' ? captionTa : captionEn;
+
       if (img) {
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt;
@@ -205,135 +392,6 @@
     }, { passive: true });
   }
 
-  // ── Enquiry Form ─────────────────────────────────────────
-  function initEnquiryForm() {
-    var form = document.getElementById('enquiry-form');
-    if (!form) return;
-
-    var formContainer = document.getElementById('enquiry-form-container');
-    var successContainer = document.getElementById('enquiry-success');
-    var submitBtn = form.querySelector('.form__submit');
-    var isSubmitting = false;
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      if (isSubmitting) return;
-
-      // Validate
-      var isValid = validateForm(form);
-      if (!isValid) return;
-
-      isSubmitting = true;
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-      }
-
-      // Simulate submission (replace with actual backend)
-      setTimeout(function () {
-        // Store form data for WhatsApp follow-up
-        var formData = new FormData(form);
-        var fullName = formData.get('full-name') || '';
-        var eventType = formData.get('event-type') || 'an event';
-        var eventDate = formData.get('event-date') || '';
-        var guests = formData.get('guests') || '';
-
-        // Show success
-        if (formContainer) formContainer.style.display = 'none';
-        if (successContainer) {
-          successContainer.classList.add('visible');
-
-          // Update WhatsApp follow-up link
-          var waFollowUp = document.getElementById('wa-followup');
-          if (waFollowUp && typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.whatsapp) {
-            var msg = SITE_CONFIG.getWhatsAppEnquiryMessage(eventType, eventDate, guests, fullName);
-            waFollowUp.href = 'https://wa.me/' + SITE_CONFIG.whatsapp + '?text=' + encodeURIComponent(msg);
-          }
-        }
-
-        isSubmitting = false;
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit Enquiry';
-        }
-      }, 1200);
-    });
-
-    // Real-time validation on blur
-    var requiredFields = form.querySelectorAll('[required]');
-    requiredFields.forEach(function (field) {
-      field.addEventListener('blur', function () {
-        validateField(field);
-      });
-
-      field.addEventListener('input', function () {
-        if (field.classList.contains('error')) {
-          validateField(field);
-        }
-      });
-    });
-  }
-
-  function validateForm(form) {
-    var fields = form.querySelectorAll('[required]');
-    var isValid = true;
-
-    fields.forEach(function (field) {
-      if (!validateField(field)) {
-        isValid = false;
-      }
-    });
-
-    // Scroll to first error
-    if (!isValid) {
-      var firstError = form.querySelector('.error');
-      if (firstError) {
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        firstError.focus();
-      }
-    }
-
-    return isValid;
-  }
-
-  function validateField(field) {
-    var errorEl = field.parentElement.querySelector('.form__error');
-    var value = field.value.trim();
-    var isValid = true;
-    var message = '';
-
-    if (!value) {
-      isValid = false;
-      message = 'This field is required';
-    } else if (field.type === 'email' && value) {
-      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        isValid = false;
-        message = 'Please enter a valid email address';
-      }
-    } else if (field.type === 'tel' && value) {
-      var phoneRegex = /^[\d\s+\-()]{7,15}$/;
-      if (!phoneRegex.test(value)) {
-        isValid = false;
-        message = 'Please enter a valid phone number';
-      }
-    }
-
-    if (isValid) {
-      field.classList.remove('error');
-      if (errorEl) errorEl.classList.remove('visible');
-    } else {
-      field.classList.add('error');
-      if (errorEl) {
-        errorEl.textContent = message;
-        errorEl.classList.add('visible');
-      }
-    }
-
-    return isValid;
-  }
-
   // ── Contact Links ────────────────────────────────────────
   function initContactLinks() {
     if (typeof SITE_CONFIG === 'undefined') return;
@@ -344,9 +402,6 @@
       if (SITE_CONFIG.phone) {
         link.href = 'tel:' + SITE_CONFIG.phone;
         link.style.display = '';
-      } else {
-        link.href = '#contact';
-        link.title = 'Contact details coming soon';
       }
     });
 
@@ -356,8 +411,6 @@
       if (SITE_CONFIG.phoneSecondary) {
         link.href = 'tel:' + SITE_CONFIG.phoneSecondary;
         link.style.display = '';
-      } else {
-        link.style.display = 'none';
       }
     });
 
@@ -370,9 +423,6 @@
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.style.display = '';
-      } else {
-        link.href = '#contact';
-        link.title = 'WhatsApp details coming soon';
       }
     });
 
@@ -384,17 +434,6 @@
       link.rel = 'noopener noreferrer';
     });
 
-    // Email links
-    var emailLinks = document.querySelectorAll('[data-action="email"]');
-    emailLinks.forEach(function (link) {
-      if (SITE_CONFIG.email && SITE_CONFIG.email.trim() !== '') {
-        link.href = 'mailto:' + SITE_CONFIG.email;
-        link.style.display = '';
-      } else {
-        link.style.display = 'none';
-      }
-    });
-
     // WhatsApp float
     var waFloat = document.getElementById('whatsapp-float');
     if (waFloat) {
@@ -402,8 +441,6 @@
         waFloat.href = 'https://wa.me/' + SITE_CONFIG.whatsapp + '?text=' + encodeURIComponent(SITE_CONFIG.whatsappDefaultMessage);
         waFloat.target = '_blank';
         waFloat.rel = 'noopener noreferrer';
-      } else {
-        waFloat.style.display = 'none';
       }
     }
   }
@@ -411,14 +448,7 @@
   // ── Render Dynamic Content ───────────────────────────────
   function renderDynamicContent() {
     if (typeof SITE_CONFIG === 'undefined') return;
-
-    // Render facilities
     renderFacilities();
-
-    // Render contact details
-    renderContactDetails();
-
-    // Render social media
     renderSocialMedia();
   }
 
@@ -429,69 +459,22 @@
     var enabledFacilities = SITE_CONFIG.facilities.filter(function (f) { return f.enabled; });
 
     if (enabledFacilities.length === 0) {
-      container.innerHTML = '<div class="gallery__placeholder"><div class="gallery__placeholder-icon">🏛️</div><p class="gallery__placeholder-text">Facility details coming soon</p><p class="gallery__placeholder-subtext">Contact Peace Mahal for information about available facilities.</p></div>';
+      container.innerHTML = '<div class="gallery__placeholder"><div class="gallery__placeholder-icon">🏛️</div><p class="gallery__placeholder-text">Facility details coming soon</p></div>';
       return;
     }
 
     container.innerHTML = enabledFacilities.map(function (facility, i) {
+      var name = currentLang === 'ta' && facility.nameTa ? facility.nameTa : facility.name;
+      var desc = currentLang === 'ta' && facility.descriptionTa ? facility.descriptionTa : facility.description;
+
       return '<div class="facility-card reveal reveal--delay-' + ((i % 5) + 1) + '">' +
         '<span class="facility-card__icon">' + facility.icon + '</span>' +
-        '<h3 class="facility-card__name">' + facility.name + '</h3>' +
-        '<p class="facility-card__description">' + facility.description + '</p>' +
+        '<h3 class="facility-card__name">' + name + '</h3>' +
+        '<p class="facility-card__description">' + desc + '</p>' +
         '</div>';
     }).join('');
 
-    // Re-init reveal for new elements
     initRevealAnimations();
-  }
-
-  function renderContactDetails() {
-    // Phone display
-    var phoneDisplays = document.querySelectorAll('[data-display="phone"]');
-    phoneDisplays.forEach(function (el) {
-      if (SITE_CONFIG.phone && SITE_CONFIG.phoneSecondary) {
-        el.innerHTML = '<a href="tel:' + SITE_CONFIG.phone + '">' + SITE_CONFIG.phone + '</a> &nbsp;|&nbsp; <a href="tel:' + SITE_CONFIG.phoneSecondary + '">' + SITE_CONFIG.phoneSecondary + '</a>';
-      } else if (SITE_CONFIG.phone) {
-        el.innerHTML = '<a href="tel:' + SITE_CONFIG.phone + '">' + SITE_CONFIG.phone + '</a>';
-      } else {
-        el.innerHTML = '<span class="contact__placeholder">Contact details will be updated here.</span>';
-      }
-    });
-
-    // WhatsApp display
-    var waDisplays = document.querySelectorAll('[data-display="whatsapp"]');
-    waDisplays.forEach(function (el) {
-      if (SITE_CONFIG.whatsapp) {
-        el.innerHTML = '<a href="https://wa.me/' + SITE_CONFIG.whatsapp + '" target="_blank" rel="noopener noreferrer">Chat on WhatsApp (+91 ' + (SITE_CONFIG.phone || SITE_CONFIG.whatsapp) + ')</a>';
-      } else {
-        el.innerHTML = '<span class="contact__placeholder">WhatsApp details will be updated here.</span>';
-      }
-    });
-
-    // Email display - only display once actual email address is configured
-    var emailDisplays = document.querySelectorAll('[data-display="email"]');
-    emailDisplays.forEach(function (el) {
-      var emailCard = document.getElementById('contact-email-card');
-      var footerEmail = document.getElementById('footer-email-item');
-      if (SITE_CONFIG.email && SITE_CONFIG.email.trim() !== '') {
-        el.innerHTML = '<a href="mailto:' + SITE_CONFIG.email + '">' + SITE_CONFIG.email + '</a>';
-        if (emailCard) emailCard.style.display = '';
-        if (footerEmail) footerEmail.style.display = '';
-      } else {
-        if (emailCard) emailCard.style.display = 'none';
-        if (footerEmail) footerEmail.style.display = 'none';
-      }
-    });
-
-    // Business hours display
-    var hoursDisplays = document.querySelectorAll('[data-display="hours"]');
-    hoursDisplays.forEach(function (el) {
-      if (SITE_CONFIG.businessHours) {
-        el.textContent = SITE_CONFIG.businessHours;
-      } else {
-        el.innerHTML = 'Monday – Sunday: 9:00 AM – 7:00 PM';
-      }
-    });
   }
 
   function renderSocialMedia() {
@@ -507,18 +490,10 @@
     }
 
     var html = '';
-    if (social.facebook) {
-      html += '<a href="' + social.facebook + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Facebook">📘</a>';
-    }
-    if (social.instagram) {
-      html += '<a href="' + social.instagram + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Instagram">📸</a>';
-    }
-    if (social.youtube) {
-      html += '<a href="' + social.youtube + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="YouTube">▶️</a>';
-    }
-    if (social.twitter) {
-      html += '<a href="' + social.twitter + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Twitter">🐦</a>';
-    }
+    if (social.facebook) html += '<a href="' + social.facebook + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Facebook">📘</a>';
+    if (social.instagram) html += '<a href="' + social.instagram + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Instagram">📸</a>';
+    if (social.youtube) html += '<a href="' + social.youtube + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="YouTube">▶️</a>';
+    if (social.twitter) html += '<a href="' + social.twitter + '" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Twitter">🐦</a>';
     container.innerHTML = html;
   }
 
@@ -544,7 +519,6 @@
         observer.observe(el);
       });
     } else {
-      // Fallback: show all
       reveals.forEach(function (el) {
         el.classList.add('revealed');
       });
