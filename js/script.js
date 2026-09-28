@@ -27,6 +27,7 @@
     initBackToTop();
     initLanguage();
     renderDynamicContent();
+    initMobileSliders();
   });
 
   // ── Language System (Bilingual English / Tamil) ───────────
@@ -475,6 +476,7 @@
     }).join('');
 
     initRevealAnimations();
+    initMobileSliders(); // Refresh hints after dynamic render
   }
 
   function renderSocialMedia() {
@@ -540,6 +542,51 @@
 
     btn.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // ── Mobile Sliders — swipe hints & touch behaviour ───────
+  // Injects swipe-hint labels below each horizontal slider on mobile.
+  // CSS (scroll-snap + overflow-x:auto) already handles touch swiping;
+  // this function only adds the visible hint text and removes stale ones.
+  function initMobileSliders() {
+    if (window.innerWidth > 768) return; // desktop: do nothing
+
+    var sliders = [
+      {
+        sel: '.events__grid',
+        hint: '← Swipe to explore all events →'
+      },
+      {
+        sel: '#facilities-grid',
+        hint: '← Swipe to see all facilities →'
+      },
+      {
+        sel: '.why-choose__grid',
+        hint: '← Swipe to see more →'
+      },
+      {
+        sel: '.testimonials__grid',
+        hint: '← Swipe to read more →'
+      }
+    ];
+
+    sliders.forEach(function (s) {
+      var el = document.querySelector(s.sel);
+      if (!el) return;
+
+      // Avoid duplicate hints
+      var existing = el.parentElement && el.parentElement.querySelector('.pm-swipe-hint');
+      if (existing) return;
+
+      var hint = document.createElement('p');
+      hint.className = 'pm-swipe-hint';
+      hint.setAttribute('aria-hidden', 'true');
+      hint.textContent = s.hint;
+
+      if (el.parentElement) {
+        el.parentElement.insertBefore(hint, el.nextSibling);
+      }
     });
   }
 
